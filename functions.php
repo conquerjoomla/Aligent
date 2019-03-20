@@ -12,9 +12,9 @@ function FormatResult($Days, $format)
     }
 }
 
-function ValidateDate($date, $format = 'Y-m-d H:i:s')
+function ValidateDate($date, $format = 'Y-m-d H:i:s', $timezone = 'Australia/Adelaide')
 {
-    $d = DateTime::createFromFormat($format, $date);
+    $d = DateTime::createFromFormat($format, $date, new DateTimeZone($timezone));
     $valid = DateTime::getLastErrors();
     if ($valid['warning_count']!=0 || $valid['error_count']!=0)
     {
@@ -23,13 +23,13 @@ function ValidateDate($date, $format = 'Y-m-d H:i:s')
     return $d && $d->format($format) == $date;
 }
 
-function DaysBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s')
+function DaysBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s', $StartTimeZone = 'Australia/Adelaide', $EndTimeZone = 'Australia/Adelaide')
 {
-    if (!ValidateDate($Start, $Dateformat)) { return false; }
-    if (!ValidateDate($End, $Dateformat)) { return false; }
+    if (!ValidateDate($Start, $Dateformat, $StartTimeZone)) { return false; }
+    if (!ValidateDate($End, $Dateformat, $EndTimeZone)) { return false; }
 
-    $StartDate = DateTime::createFromFormat($Dateformat,$Start);
-    $EndDate = DateTime::createFromFormat($Dateformat,$End);
+    $StartDate = DateTime::createFromFormat($Dateformat,$Start, new DateTimeZone($StartTimeZone));
+    $EndDate = DateTime::createFromFormat($Dateformat,$End, new DateTimeZone($EndTimeZone));
     if ($StartDate > $EndDate)
     {
         return 0;
@@ -38,9 +38,9 @@ function DaysBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s
     return FormatResult($diff->days, $ResultFormat);
 }
 
-function WeeksBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s')
+function WeeksBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s', $StartTimeZone = 'Australia/Adelaide', $EndTimeZone = 'Australia/Adelaide')
 {
-    $Days = DaysBetween($Start, $End, 4, $Dateformat);
+    $Days = DaysBetween($Start, $End, 4, $Dateformat, $StartTimeZone, $EndTimeZone);
     if ($Days === false)
     {
         return false;
@@ -48,16 +48,16 @@ function WeeksBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:
     return FormatResult(floor($Days / 7), $ResultFormat);
 }
 
-function WeekdaysBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s')
+function WeekdaysBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s', $StartTimeZone = 'Australia/Adelaide', $EndTimeZone = 'Australia/Adelaide')
 {
-    $Days = DaysBetween($Start, $End, 4, $Dateformat);
+    $Days = DaysBetween($Start, $End, 4, $Dateformat, $StartTimeZone, $EndTimeZone);
     if ($Days === false)
     {
         return false;
     }
 
-    $StartDate = DateTime::createFromFormat($Dateformat,$Start);
-    $EndDate = DateTime::createFromFormat($Dateformat,$End);
+    $StartDate = DateTime::createFromFormat($Dateformat, $Start, new DateTimeZone($StartTimeZone));
+    $EndDate = DateTime::createFromFormat($Dateformat, $End, new DateTimeZone($EndTimeZone));
     if ($StartDate > $EndDate)
     {
         return 0;
