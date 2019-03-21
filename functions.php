@@ -1,5 +1,18 @@
 <?php
 
+function ResultFormatName($ResultFormat)
+{
+	switch ($ResultFormat)
+	{
+    case 1: return 'Seconds';
+    case 2: return 'Minutes';
+    case 3: return 'Hours';
+    case 4: return 'Days';
+    case 5: return 'Years';
+	}
+	return 'Unknown';
+}
+
 function FormatResult($Days, $format)
 {
     switch ($format)
@@ -45,7 +58,7 @@ function WeeksBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:
     {
         return false;
     }
-    return FormatResult(floor($Days / 7), $ResultFormat);
+    return FormatResult(floor($Days / 7) * 7, $ResultFormat);
 }
 
 function WeekdaysBetween($Start, $End, $ResultFormat = 4, $Dateformat = 'Y-m-d H:i:s', $StartTimeZone = 'Australia/Adelaide', $EndTimeZone = 'Australia/Adelaide')
